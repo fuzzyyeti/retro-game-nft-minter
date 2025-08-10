@@ -7,11 +7,13 @@ import {
     createGenericFile,
     createSignerFromKeypair,
     generateSigner,
-    signerIdentity
+    signerIdentity,
+    some,
+    none
 } from '@metaplex-foundation/umi';
 import { irysUploader } from '@metaplex-foundation/umi-uploader-irys';
 import { askQuestion, closeRl } from './utils';
-import { createCollectionV2 } from '@metaplex-foundation/mpl-core';
+import { createCollection, createCollectionV2, plugin, pluginKeyToPluginType } from '@metaplex-foundation/mpl-core';
 
 async function main() {
     const umi = createUmi(process.env.RPC_URL!)
@@ -53,11 +55,16 @@ async function main() {
     const collectionMetadataUri = await umi.uploader.uploadJson(collectionMetadata);
 
 
-    await createCollectionV2(umi,
+    await createCollection(umi,
     {
         collection: collectionSigner,
         name: collectionName,
         uri: collectionMetadataUri,
+        plugins: [
+            {
+                type: "BubblegumV2",
+            },
+        ],
     }).sendAndConfirm(umi);
 
     console.log('Collection NFT created! Public Key:', collectionSigner.publicKey);

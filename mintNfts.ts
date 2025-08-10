@@ -81,6 +81,7 @@ async function main() {
         const { signature } = await mintV2(umi, {
             leafOwner: keypair.publicKey,
             merkleTree,
+            coreCollection: collection,
             metadata: {
                 name: nftName,
                 uri: nftMetadataUri,
