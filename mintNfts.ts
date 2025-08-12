@@ -1,6 +1,6 @@
 import {
     mintV2,
-    mplBubblegum,
+    mplBubblegum, parseLeafFromMintV2Transaction,
 } from '@metaplex-foundation/mpl-bubblegum';
 import {
     mplTokenMetadata,
@@ -97,6 +97,15 @@ async function main() {
             },
         }).sendAndConfirm(umi, { send: { commitment: 'finalized' } });
         console.log('NFT minted! Signature:', signature);
+        const leaf = await parseLeafFromMintV2Transaction(umi, signature);
+        const assetId = leaf.id;
+        fs.appendFile('assets.txt', `${assetId.toString()}\n`, (err) => {
+            if (err) {
+                console.error('Error writing to assets.txt:', err);
+            } else {
+                console.log(`Asset ID ${assetId.toString()} saved to assets.txt`);
+            }
+        });
     }
     closeRl();
 }
